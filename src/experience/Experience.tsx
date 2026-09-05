@@ -38,6 +38,34 @@ function diamondPoint(progress: number, radius: number) {
   };
 }
 
+type ShapePart =
+  | { kind: "line"; from: [number, number]; to: [number, number] }
+  | { kind: "circle"; center: [number, number]; radius: number }
+  | { kind: "arc"; center: [number, number]; radius: number; start: number; end: number };
+
+function setShapePoint(target: Float32Array, offset: number, index: number, count: number, parts: ShapePart[], random: () => number) {
+  const partIndex = index % parts.length;
+  const part = parts[partIndex];
+  const progress = Math.floor(index / parts.length) / Math.ceil(count / parts.length);
+  let x = 0;
+  let y = 0;
+
+  if (part.kind === "line") {
+    x = part.from[0] + (part.to[0] - part.from[0]) * progress;
+    y = part.from[1] + (part.to[1] - part.from[1]) * progress;
+  } else {
+    const start = part.kind === "arc" ? part.start : 0;
+    const end = part.kind === "arc" ? part.end : Math.PI * 2;
+    const angle = start + (end - start) * progress;
+    x = part.center[0] + Math.cos(angle) * part.radius;
+    y = part.center[1] + Math.sin(angle) * part.radius;
+  }
+
+  target[offset] = x + (random() - 0.5) * 0.026;
+  target[offset + 1] = y + (random() - 0.5) * 0.026;
+  target[offset + 2] = (random() - 0.5) * 0.14;
+}
+
 function createTargets(count: number) {
   const core = new Float32Array(count * 3);
   const network = new Float32Array(count * 3);
@@ -47,6 +75,65 @@ function createTargets(count: number) {
   const collapse = new Float32Array(count * 3);
   const mark = new Float32Array(count * 3);
   const random = createRandom(24081999);
+  const networkNodes: [number, number][] = [[-1.55, -0.85], [-1.55, 0], [-1.55, 0.85], [0, -1.15], [0, -0.38], [0, 0.38], [0, 1.15], [1.55, -0.72], [1.55, 0.72]];
+  const networkParts: ShapePart[] = [
+    ...networkNodes.map((center): ShapePart => ({ kind: "circle", center, radius: 0.13 })),
+    ...networkNodes.slice(0, 3).flatMap((from) => networkNodes.slice(3, 7).map((to): ShapePart => ({ kind: "line", from, to }))),
+    ...networkNodes.slice(3, 7).flatMap((from) => networkNodes.slice(7).map((to): ShapePart => ({ kind: "line", from, to }))),
+  ];
+  const researchParts: ShapePart[] = [
+    { kind: "circle", center: [-0.28, 0.27], radius: 1.18 },
+    { kind: "circle", center: [-0.28, 0.27], radius: 1.18 },
+    { kind: "line", from: [0.55, -0.56], to: [1.55, -1.56] },
+    { kind: "line", from: [0.43, -0.68], to: [1.43, -1.68] },
+    { kind: "circle", center: [-0.75, 0.58], radius: 0.12 },
+    { kind: "circle", center: [0.18, 0.67], radius: 0.12 },
+    { kind: "circle", center: [-0.12, -0.25], radius: 0.12 },
+    { kind: "line", from: [-0.64, 0.54], to: [0.06, 0.63] },
+    { kind: "line", from: [-0.68, 0.48], to: [-0.18, -0.14] },
+    { kind: "line", from: [0.14, 0.55], to: [-0.08, -0.13] },
+  ];
+  const buildParts: ShapePart[] = [
+    { kind: "line", from: [-0.65, 0.72], to: [0.65, 0.72] },
+    { kind: "line", from: [0.65, 0.72], to: [0.65, -0.72] },
+    { kind: "line", from: [0.65, -0.72], to: [-0.65, -0.72] },
+    { kind: "line", from: [-0.65, -0.72], to: [-0.65, 0.72] },
+    { kind: "line", from: [-1.65, 0.72], to: [-2.12, 0] },
+    { kind: "line", from: [-2.12, 0], to: [-1.65, -0.72] },
+    { kind: "line", from: [1.65, 0.72], to: [2.12, 0] },
+    { kind: "line", from: [2.12, 0], to: [1.65, -0.72] },
+    { kind: "line", from: [-0.95, 0.48], to: [-0.65, 0.48] },
+    { kind: "line", from: [-0.95, 0], to: [-0.65, 0] },
+    { kind: "line", from: [-0.95, -0.48], to: [-0.65, -0.48] },
+    { kind: "line", from: [0.65, 0.48], to: [0.95, 0.48] },
+    { kind: "line", from: [0.65, 0], to: [0.95, 0] },
+    { kind: "line", from: [0.65, -0.48], to: [0.95, -0.48] },
+    { kind: "circle", center: [0, 0], radius: 0.24 },
+  ];
+  const peopleParts: ShapePart[] = [
+    { kind: "circle", center: [-1.25, 0.58], radius: 0.34 },
+    { kind: "circle", center: [0, 0.78], radius: 0.38 },
+    { kind: "circle", center: [1.25, 0.58], radius: 0.34 },
+    { kind: "arc", center: [-1.25, -0.55], radius: 0.78, start: Math.PI * 0.08, end: Math.PI * 0.92 },
+    { kind: "arc", center: [0, -0.48], radius: 0.88, start: Math.PI * 0.08, end: Math.PI * 0.92 },
+    { kind: "arc", center: [1.25, -0.55], radius: 0.78, start: Math.PI * 0.08, end: Math.PI * 0.92 },
+    { kind: "line", from: [-0.91, 0.58], to: [-0.38, 0.76] },
+    { kind: "line", from: [0.38, 0.76], to: [0.91, 0.58] },
+    { kind: "line", from: [-0.94, 0.28], to: [-0.34, 0.5] },
+    { kind: "line", from: [0.34, 0.5], to: [0.94, 0.28] },
+  ];
+  const collapseParts: ShapePart[] = [
+    { kind: "line", from: [0, 1.55], to: [0.28, 0.28] },
+    { kind: "line", from: [0.28, 0.28], to: [1.55, 0] },
+    { kind: "line", from: [1.55, 0], to: [0.28, -0.28] },
+    { kind: "line", from: [0.28, -0.28], to: [0, -1.55] },
+    { kind: "line", from: [0, -1.55], to: [-0.28, -0.28] },
+    { kind: "line", from: [-0.28, -0.28], to: [-1.55, 0] },
+    { kind: "line", from: [-1.55, 0], to: [-0.28, 0.28] },
+    { kind: "line", from: [-0.28, 0.28], to: [0, 1.55] },
+    { kind: "circle", center: [0, 0], radius: 0.72 },
+    { kind: "circle", center: [0, 0], radius: 1.12 },
+  ];
 
   for (let i = 0; i < count; i++) {
     const k = i * 3;
@@ -57,30 +144,11 @@ function createTargets(count: number) {
     core[k + 1] = Math.cos(b) * r;
     core[k + 2] = Math.sin(b) * Math.sin(a) * r;
 
-    const ring = i % 5;
-    const rr = 0.65 + ring * 0.36 + random() * 0.18;
-    network[k] = Math.cos(a) * rr;
-    network[k + 1] = (random() - 0.5) * 2.4;
-    network[k + 2] = Math.sin(a) * rr;
-
-    const x = (random() - 0.5) * 4.6;
-    research[k] = x;
-    research[k + 1] = Math.sin(x * 2.1 + a) * 0.7 + (random() - 0.5) * 0.5;
-    research[k + 2] = (random() - 0.5) * 1.5;
-
-    const side = 2.4;
-    build[k] = (random() - 0.5) * side;
-    build[k + 1] = (random() - 0.5) * side;
-    build[k + 2] = (random() - 0.5) * side;
-
-    people[k] = (random() - 0.5) * 5.2;
-    people[k + 1] = (random() - 0.5) * 1.4;
-    people[k + 2] = -0.9 - random() * 1.4;
-
-    const cr = random() * 0.65;
-    collapse[k] = Math.cos(a) * cr;
-    collapse[k + 1] = Math.sin(a) * cr;
-    collapse[k + 2] = (random() - 0.5) * 0.24;
+    setShapePoint(network, k, i, count, networkParts, random);
+    setShapePoint(research, k, i, count, researchParts, random);
+    setShapePoint(build, k, i, count, buildParts, random);
+    setShapePoint(people, k, i, count, peopleParts, random);
+    setShapePoint(collapse, k, i, count, collapseParts, random);
 
     const quadrant = i % 4;
     const centers = [[0, 1.05], [1.05, 0], [0, -1.05], [-1.05, 0]];
@@ -122,7 +190,8 @@ function Particles({ state }: { state: SceneState }) {
       attr.needsUpdate = true;
     }
     if (points.current) {
-      points.current.rotation.y += 0.0008;
+      const baseRotation = state === "hero" ? clock.elapsedTime * 0.08 : Math.sin(clock.elapsedTime * 0.2) * 0.055;
+      points.current.rotation.y = THREE.MathUtils.lerp(points.current.rotation.y, baseRotation + pointer.current.x * 0.04, 0.04);
       points.current.rotation.x = THREE.MathUtils.lerp(points.current.rotation.x, pointer.current.y * 0.06, 0.04);
       points.current.rotation.z = Math.sin(clock.elapsedTime * 0.15) * 0.025;
       points.current.position.x = THREE.MathUtils.lerp(points.current.position.x, pointer.current.x * 0.12, 0.035);
