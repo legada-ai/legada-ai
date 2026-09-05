@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1c1c1c"/><stop offset="1" stop-color="#050505"/></linearGradient><filter id="grain"><feTurbulence baseFrequency=".9" numOctaves="3" seed="5"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .09 0"/></filter></defs>
+<rect width="400" height="520" fill="url(#g)"/>
+<circle cx="195" cy="170" r="82" fill="#aaa"/>
+<path d="M153 235 C143 290,95 272,48 420 L352 420 C295 270,250 288,237 235Z" fill="#777"/>
+<path d="M0 420h400v100H0z" fill="#090909"/>
+<rect width="400" height="520" filter="url(#grain)" opacity=".5"/>
+<text x="24" y="486" fill="#d8d8d4" font-family="monospace" font-size="12">PHOTO MOCK / REPLACE</text>
+</svg>
