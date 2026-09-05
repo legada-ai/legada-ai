@@ -4,6 +4,7 @@ import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { Hero } from "@/components/sections/Hero";
 import { StackSection } from "@/components/sections/StackSection";
 import { Mission } from "@/components/sections/Mission";
+import { Institution } from "@/components/sections/Institution";
 import { Activities } from "@/components/sections/Activities";
 import { Leadership } from "@/components/sections/Leadership";
 import { Manifesto } from "@/components/sections/Manifesto";
@@ -20,6 +21,7 @@ export default function Home() {
       <Hero />
       <StackSection />
       <Mission />
+      <Institution />
       <Activities />
       <Leadership />
       <Manifesto />
