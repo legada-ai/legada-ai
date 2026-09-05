@@ -84,6 +84,24 @@ main { position: relative; isolation: isolate; }
 .stack-group__label { display: block; font-family: var(--font-mono); color: #777; font-size: 9px; letter-spacing: .13em; }
 .stack-item { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 15px; }
 .stack-item svg { color: #666; }
+.stack-item__identity { display: inline-flex; align-items: center; gap: 11px; min-width: 0; }
+.stack-logo { width: 26px; height: 26px; flex: 0 0 26px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.025); color: #a6a69f; transition: color .2s ease, border-color .2s ease, background .2s ease; }
+.stack-logo svg { width: 15px; height: 15px; color: currentColor; fill: currentColor; }
+.stack-logo--text { font: 8px var(--font-mono); letter-spacing: .04em; }
+.stack-item:hover .stack-logo { color: var(--accent); border-color: rgba(200,255,61,.28); background: rgba(200,255,61,.045); }
+
+.campus { padding-top: 20px; padding-bottom: 70px; }
+.campus__frame { min-height: clamp(470px,61vw,700px); position: relative; overflow: hidden; border: 1px solid var(--border); background: #0a0a0a; }
+.campus__frame > img { object-fit: cover; object-position: center; filter: grayscale(1) contrast(1.18) brightness(.54); transform: scale(1.015); }
+.campus__frame:before { content: ""; position: absolute; z-index: 1; inset: 0; background: linear-gradient(90deg,rgba(5,5,5,.92) 0%,rgba(5,5,5,.5) 46%,rgba(5,5,5,.18) 76%),linear-gradient(0deg,rgba(5,5,5,.8),transparent 46%); }
+.campus__frame:after { content: ""; position: absolute; z-index: 2; width: 42%; height: 1px; right: 0; top: 68px; background: linear-gradient(90deg,transparent,rgba(200,255,61,.65)); }
+.campus__grid { position: absolute; z-index: 2; inset: 0; opacity: .17; background-image: linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px); background-size: 70px 70px; mask-image: linear-gradient(90deg,#000,transparent 76%); }
+.campus__content { position: absolute; z-index: 3; inset: 0; padding: clamp(26px,4vw,58px); display: flex; flex-direction: column; justify-content: space-between; }
+.campus__content > div:nth-child(2) { max-width: 720px; }
+.campus__seal { width: 54px; height: 54px; display: grid; place-items: center; margin-bottom: 24px; color: var(--accent); border: 1px solid rgba(200,255,61,.3); background: rgba(5,5,5,.5); backdrop-filter: blur(8px); }
+.campus h2 { max-width: 700px; margin: 0; font-size: clamp(42px,5.5vw,76px); line-height: .96; letter-spacing: -.058em; font-weight: 500; }
+.campus__location { display: flex; align-items: center; gap: 9px; color: #b5b5af; font: 10px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.campus__location svg { color: var(--accent); }
 
 .mission { position: relative; padding-bottom: 140px; }
 .mission__sticky { min-height: 72vh; display: grid; align-content: center; }
@@ -202,6 +220,13 @@ main { position: relative; isolation: isolate; }
   .section-head { padding-top: 110px; }
   .stack-grid { grid-template-columns: 1fr; margin-top: 52px; }
   .stack-group { min-height: auto; }
+  .campus { padding-top: 0; padding-bottom: 20px; }
+  .campus__frame { min-height: 570px; }
+  .campus__frame > img { object-position: 57% center; }
+  .campus__frame:before { background: linear-gradient(0deg,rgba(5,5,5,.93) 0%,rgba(5,5,5,.47) 70%,rgba(5,5,5,.28)); }
+  .campus__content { padding: 24px; }
+  .campus h2 { font-size: clamp(40px,12vw,56px); }
+  .campus__location { align-items: flex-start; line-height: 1.5; }
   .mission__sticky { min-height: 60vh; }
   .mission__steps { padding-top: 8vh; }
   .mission-step { grid-template-columns: 44px 1fr; min-height: 30vh; }
@@ -219,8 +244,9 @@ main { position: relative; isolation: isolate; }
   .join { padding-top: 100px; }
   .footer__bottom { grid-template-columns: 1fr auto; gap: 20px; }
   .footer__bottom p { grid-column: 1 / -1; grid-row: 2; text-align: left; }
+  .experience { opacity: .5; }
   .experience__glow { width: 80vw; height: 80vw; }
-  .experience__hologram { width: 132px; height: 132px; opacity: .42; }
+  .experience__hologram { width: 132px; height: 132px; opacity: .72; }
   .experience__symbol { width: 60px; height: 60px; }
   .experience__status { display: none; }
 }
